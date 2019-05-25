@@ -7,7 +7,7 @@ from tkinter import * #Imports the tkinter module for the GUI
 ### Global Variables ###
 windowWidth = 1000 #Sets the width of the window
 windowHeight = 700 #Sets the height of the window
-bgColour = "orange" #Sets the background colour
+bgColour = "teal" #Sets the background colour
 fgColour = "white" #Sets the foreground colour
 ###
 
@@ -126,9 +126,8 @@ class Game: #Game class
         self.c = c #Allows canvas to be used in this class
         self.fontSize = 40 #Sets up variable
         self.difficulty = difficulty #Sets up variable
-        self.timer = 60 #Sets up variable
+        self.timer = 60 #Sets up variable #You can change the timer length here
         self.stopCount = 0 #Sets up variable
-        self.stopGame = 0 #Sets up variable
         self.score = 0 #Sets up variable
         self.incorrect = 0 #Sets up variable
         c.focus_set() #Focuses on window for keyboard events
@@ -152,7 +151,7 @@ class Game: #Game class
                            outline = fgColour) #Creates a rectangle
         c.create_rectangle(150,100,windowWidth-150,300,
                            fill = bgColour,
-                           outline = bgColour) #Creates text
+                           outline = bgColour) #Creates a rectangle
         ###
         
         ### Start Text ###
@@ -176,7 +175,7 @@ class Game: #Game class
     ### Game Start ###
     def start(self,*args):
         ### Delete Start Text ###
-        self.c.itemconfigure(self.startText,text = "") #Changes text for "startText"
+        self.c.itemconfigure(self.startText,text = "") #Changes the start text to nothing
         ###
 
         ### Answer Box ###
@@ -184,12 +183,12 @@ class Game: #Game class
                             bd = 0,
                             highlightthickness=0,
                             font = ("Arial",self.fontSize,"bold"),
-                            fg = fgColour) #Creates an entry box to input answers
+                            fg = fgColour) #Creates a box to input answers
         self.answer.place(x = 150,
                           y = windowHeight-200,
                           width = windowWidth-300,
-                          height = 100) #Places entry box in a certain position
-        self.answer.bind("<Return>",self.checkAnswer) #Binds enter to corresponding function
+                          height = 100) #Places the input box on the canvas
+        self.answer.bind("<Return>",self.checkAnswer) #Binds enter to submit answer
         ###
 
         ### Timer ###
@@ -208,7 +207,6 @@ class Game: #Game class
                                             text = ("Score:",self.score)) #Creates text
         ###
 
-        self.stopGame = 1 #Sets variable to 1
         self.count() #Runs function
         self.question() #Runs function
     ###
@@ -217,42 +215,42 @@ class Game: #Game class
     def count(self):
         if self.timer >= 0:
             if self.stopCount == 1:
-                return #Stops counter if stopCount is 1
+                return #Timer stops if stopCount is 1
             elif self.timer == 0:
-                self.gameEnd() #Runs function if timer is at 0
-            self.c.itemconfigure(self.timerText,text = ("Time:",self.timer)) #Changes text for "timerText" to the current time
-            self.c.after(1000,self.count) #Makes canvas wait 1 second
-            self.timer -= 1 #Takes one off the timer
+                self.gameEnd() #Runs function when timer ends
+            self.c.itemconfigure(self.timerText,text = ("Time:",self.timer)) #Changes text to match the time left
+            self.c.after(1000,self.count) #Waits 1 second
+            self.timer -= 1 #Removes 1 from timer
     ###
 
     ### Generate Question ###  
     def question(self):
-        self.a = random.choice(self.numbers) #Picks one random number from list
-        self.b = random.choice(self.numbers) #Picks another random number from list
-        self.c.itemconfigure(self.startText,text = (self.a,"x",self.b)) #Changes text for "startText" to show the two numbers picked
-        self.answer.focus() #Focuses the input on the answer box
+        self.a = random.choice(self.numbers) #Chooses random number from list
+        self.b = random.choice(self.numbers) #Chooses random number from list
+        self.c.itemconfigure(self.startText,text = (self.a,"x",self.b)) #Changes text to show a times b
+        self.answer.focus() #Focuses input to answer box
     ###
 
     ### Answer Checker ###
     def checkAnswer(self,event=None):
         try:
-            userAnswer = int(self.answer.get())
-            if userAnswer == (self.a*self.b):
-                self.score += 1
-                self.c.itemconfigure(self.userScore,text = ("Score:",self.score))
+            userAnswer = int(self.answer.get()) #Takes the input from the answer box
+            if userAnswer == (self.a*self.b): #Checks if the answer matches the two numbers multiplied together
+                self.score += 1 #Adds 1 to score
+                self.c.itemconfigure(self.userScore,text = ("Score:",self.score)) #Updates score
             else:
-                self.incorrect += 1
-            self.answer.delete(0,'end')
-        except ValueError:
-            self.answer.delete(0,'end')
-        self.question()
+                self.incorrect += 1 #Adds 1 to incorrect if answer is wrong
+            self.answer.delete(0,'end') #Clears answer box
+        except ValueError: #Error checking if user doesn't input a number
+            self.answer.delete(0,'end') #Clears answer box
+        self.question() #Runs function
     ###
 
     ### Game Over Screen ###
     def gameEnd(self):
         ### Screen Clear ###
-        self.c.delete(ALL)
-        self.answer.destroy()
+        self.c.delete(ALL) #Deletes all elements off the canvas
+        self.answer.destroy() #Deletes answer box
         ###
 
         ### Name Box ###
@@ -260,56 +258,55 @@ class Game: #Game class
                           bd = 0,
                           highlightthickness=0,
                           font = ("Arial",self.fontSize,"bold"),
-                          fg = fgColour)
+                          fg = fgColour) #Creates a box to input name
         self.name.place(x = 150,
                         y = windowHeight-200,
                         width = windowWidth-300,
-                        height = 100)
-        self.name.bind("<Return>",self.userInfo)
-        self.name.focus()
+                        height = 100) #Places the input box on the canvas
+        self.name.bind("<Return>",self.userInfo) #Binds enter to submit answer
+        self.name.focus() #Focuses input to name box
         ###
 
         ### Final Stats ###
         self.c.create_rectangle(100,50,windowWidth-100,windowHeight-50,
                                 fill = fgColour,
-                                outline = fgColour)
+                                outline = fgColour) #Creates a rectangle
         self.c.create_text(windowWidth/2,150,
                            anchor = CENTER,
                            font = ("Arial",self.fontSize,"bold"),
                            fill = bgColour,
-                           text = ("Your Score: "+str(self.score)))
+                           text = ("Your Score: "+str(self.score))) #Creates text
         self.c.create_text(windowWidth/2,250,
                            anchor = CENTER,
                            font = ("Arial",self.fontSize,"bold"),
                            fill = bgColour,
-                           text = ("Incorrect: "+str(self.incorrect)))
+                           text = ("Incorrect: "+str(self.incorrect))) #Creates text
         self.c.create_text(windowWidth/2,350,
                            anchor = CENTER,
                            font = ("Arial",self.fontSize,"bold"),
                            fill = bgColour,
-                           text = ("Enter Name:"))
+                           text = ("Enter Name:")) #Creates text
         ###
     ###
 
     ### Save User Data ###
     def userInfo(self,*args):
-        self.userName = self.name.get()
-        self.name.destroy()
+        self.userName = self.name.get() #Takes the input from the name box
+        self.name.destroy() #Deletes name box
         ### Write To File ###
-        userData = [self.userName,self.difficulty,self.score]
-        with open('highScore.csv','a',newline="") as f:
-            writer = csv.writer(f)
-            writer.writerow(userData)
-        score = Score(self.window,self.c)
+        userData = [self.userName,self.difficulty,self.score] #Creates an array of the user data
+        with open('highScore.csv','a',newline="") as f: #Opens highScore file
+            writer = csv.writer(f) #Creates a writer object
+            writer.writerow(userData) #Appends array to file
+        score = Score(self.window,self.c) #Creates "Score" object
         ###
     ###
 
     ### Menu Button Function ###
     def menu(self,*args):
-        self.stopCount = 1
-        mainMenu = MainMenu(self.window,self.c)
-        if self.stopGame == 1:
-            self.answer.destroy()
+        self.stopCount = 1 #Sets variable
+        mainMenu = MainMenu(self.window,self.c) #Creates "MainMenu" object
+        self.answer.destroy() #Deletes answer box
     ###
 
 class Score: #Score class
@@ -317,20 +314,20 @@ class Score: #Score class
     ### Score UI ###
     def __init__(self,window,c): #Initializing function
         ### Variables ###
-        self.window = window
-        self.c = c
-        self.fontSize = 40
-        c.tag_bind("menu","<Button-1>",self.menu)
+        self.window = window #Sets variable
+        self.c = c #Sets variable
+        self.fontSize = 40 #Sets variable
+        c.tag_bind("menu","<Button-1>",self.menu) #Binds left click to corresponding function
         ###
         
         ### Background ###
-        c.delete(ALL)
+        c.delete(ALL) #Deletes all elements off the canvas
         c.create_rectangle(100,50,windowWidth-100,windowHeight-50,
                            fill = fgColour,
-                           outline = fgColour)
+                           outline = fgColour) #Creates a rectangle
         c.create_rectangle(150,100,windowWidth-150,windowHeight-150,
                            fill = bgColour,
-                           outline = bgColour)
+                           outline = bgColour) #Creates a rectangle
         ###
         
         ### Menu Button ###
@@ -339,72 +336,72 @@ class Score: #Score class
                       font = ("Arial",self.fontSize,"bold"),
                       fill = bgColour,
                       text = "Menu",
-                      tags = "menu")
+                      tags = "menu") #Creates text
         ###
         
-        self.score()
+        self.score() #Runs function
     ###
         
     ### Show Scores ###
     def score(self):
-        fontSize = 15
+        fontSize = 15 #Sets variable
         ### Open and Read File ###
-        with open('highScore.csv', 'r') as f:
-            reader = csv.reader(f)
-            highScore = [row for row in reader if len(row) > 1]
+        with open('highScore.csv', 'r') as f: #Opens highScore file
+            reader = csv.reader(f)#Creates a reader object
+            highScore = [row for row in reader if len(row) > 1] #Reads file into an array
         for index,cols in enumerate(highScore):
-            highScore[index][2] = int(cols[2])
-        highScore.sort(reverse = True,key=lambda x: x[2])
+            highScore[index][2] = int(cols[2]) #Turns score from string into an integer
+        highScore.sort(reverse = True,key=lambda x: x[2]) #Sorts array by highest score to lowest score
         ###
 
         ### Print Scores ###
-        for i in range(10):
+        for i in range(10): #Loops 10 times and displays top 10 scores
             self.c.create_text(200,windowHeight-550+(i*40),
                                anchor = W,
                                font = ("Arial",fontSize,"bold"),
                                fill = fgColour,
                                text = (str(i+1)+"."),
-                               tags = "menu")
+                               tags = "menu") #Creates text
             self.c.create_text(250,windowHeight-550+(i*40),
                                anchor = W,
                                font = ("Arial",fontSize,"bold"),
                                fill = fgColour,
                                text = (highScore[i][0]),
-                               tags = "menu")
+                               tags = "menu") #Creates text
             self.c.create_text(windowWidth-400,windowHeight-550+(i*40),
                                anchor = W,
                                font = ("Arial",fontSize,"bold"),
                                fill = fgColour,
                                text = (highScore[i][1]),
-                               tags = "menu")
+                               tags = "menu") #Creates text
             self.c.create_text(windowWidth-250,windowHeight-550+(i*40),
                                anchor = W,
                                font = ("Arial",fontSize,"bold"),
                                fill = fgColour,
                                text = (highScore[i][2]),
-                               tags = "menu")
-            i += 1
+                               tags = "menu") #Creates text
+            i += 1 #Increases variable by 1
         ###
     ###
             
     ### Menu Button Function ###
     def menu(self,*args):
-        mainMenu = MainMenu(self.window,self.c)
+        mainMenu = MainMenu(self.window,self.c) #Creates "MainMenu" object
     ###
         
 class Gui: #GUI class
     
     ### GUI ###
     def __init__(self): #Initializing function
-        window = Tk()
+        window = Tk() #Creates tkinter object
         c = Canvas(window,
                    width = windowWidth,height = windowHeight,
                    bd=0,
                    highlightthickness=0,
-                   bg = bgColour)
-        mainMenu = MainMenu(window,c)
-        c.pack()
-        window.mainloop()
+                   bg = bgColour) #Creates canvas
+        mainMenu = MainMenu(window,c) #Creates "MainMenu" object
+        c.pack() #Packs the canvas
+        window.mainloop() #Creates an event loop for registering events
     ###
 
-Gui()
+Gui() #Calls the "GUI" class
