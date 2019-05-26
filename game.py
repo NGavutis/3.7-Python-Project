@@ -7,7 +7,7 @@ from tkinter import * #Imports the tkinter module for the GUI
 ### Global Variables ###
 windowWidth = 1000 #Sets the width of the window
 windowHeight = 700 #Sets the height of the window
-bgColour = "teal" #Sets the background colour
+bgColour = "orange" #Sets the background colour
 fgColour = "white" #Sets the foreground colour
 ###
 
@@ -63,6 +63,11 @@ class MainMenu: #Main menu class
                       fill = bgColour,
                       text = "Hard",
                       tags = "hard") #Creates text
+        c.create_text(windowWidth-125,windowHeightHalf,
+                      anchor = E,
+                      font = ("Arial",15,"bold"),
+                      fill = bgColour,
+                      text = "[ i ] Click on any of\nthe 3 difficulties to\nstart the game or\nthe score button\nto view high scores") #Creates text
         ###
 
         ### Score ###
@@ -128,6 +133,7 @@ class Game: #Game class
         self.difficulty = difficulty #Sets up variable
         self.timer = 60 #Sets up variable #You can change the timer length here
         self.stopCount = 0 #Sets up variable
+        self.deleteAnswer = 0 #Sets up variable
         self.score = 0 #Sets up variable
         self.incorrect = 0 #Sets up variable
         c.focus_set() #Focuses on window for keyboard events
@@ -160,6 +166,11 @@ class Game: #Game class
                                        font = ("Arial",self.fontSize,"bold"),
                                        fill = fgColour,
                                        text = "Press Space To Start",) #Creates text
+        self.instructionText = c.create_text(150,windowHeight-250,
+                                       anchor = W,
+                                       font = ("Arial",15,"bold"),
+                                       fill = bgColour,
+                                       text = "Press Enter To Submit Answers",) #Creates text
         ###
         
         ### Menu Button ###
@@ -176,6 +187,8 @@ class Game: #Game class
     def start(self,*args):
         ### Delete Start Text ###
         self.c.itemconfigure(self.startText,text = "") #Changes the start text to nothing
+        self.c.delete(self.instructionText) #Deletes text
+        self.deleteAnswer = 1 #Sets variable
         ###
 
         ### Answer Box ###
@@ -304,9 +317,10 @@ class Game: #Game class
 
     ### Menu Button Function ###
     def menu(self,*args):
+        if self.deleteAnswer == 1:
+            self.answer.destroy() #Deletes answer box
         self.stopCount = 1 #Sets variable
         mainMenu = MainMenu(self.window,self.c) #Creates "MainMenu" object
-        self.answer.destroy() #Deletes answer box
     ###
 
 class Score: #Score class
