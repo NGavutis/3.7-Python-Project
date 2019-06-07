@@ -276,7 +276,7 @@ class Game: #Game class
                         y = windowHeight-200,
                         width = windowWidth-300,
                         height = 100) #Places the input box on the canvas
-        self.name.bind("<Return>",self.userInfo) #Binds enter to submit answer
+        self.name.bind("<Return>",self.nameCheck) #Binds enter to submit answer
         self.name.focus() #Focuses input to name box
         ###
 
@@ -302,9 +302,21 @@ class Game: #Game class
         ###
     ###
 
+    ### Checks Name ###
+    def nameCheck(self,*args):
+        with open("nameFilter.txt") as f: #Opens file
+            for line in f:
+                nameFilter = line.strip() #Reads to array
+            self.userName = self.name.get() #Takes the input from the answer box
+            if self.userName in nameFilter: #Checks if the name is appropriate
+                self.name.destroy() #Deletes name box
+                self.gameEnd() #Runs function
+            else:
+                self.name.delete(0,'end') #Clears answer box
+                self.userInfo() #Runs function
+
     ### Save User Data ###
-    def userInfo(self,*args):
-        self.userName = self.name.get() #Takes the input from the name box
+    def userInfo(self):
         self.name.destroy() #Deletes name box
         ### Write To File ###
         userData = [self.userName,self.difficulty,self.score] #Creates an array of the user data
